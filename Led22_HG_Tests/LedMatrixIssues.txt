@@ -1,0 +1,52 @@
+As this stands, it works perfectly. But not the way I want it to. It’s mostly a cobbled together collection of other peoples programs, which don’t always work the same way.
+
+If you jump to Loop, you’ll see that all it does is call routineChange(). This in turn cycles through a number of routines, most of which have their own separate header file, and run for a given number of seconds. The times are deliberately short at the moment, but that’s only so I can test them all. They’ll be extended according to which is which.
+
+There are two problems with this.
+
+The bigger one is Xmas4Leds.h
+
+This is an awesome collection of displays and I really don’t want to damage it. What I’d like to do is have each of the routines in Xmas4Leds.h be themselves called by routineChange(), and they have their own times set. Something along the lines of
+
+tim = millis();
+  while(millis()<tim+5000){
+    WarmWhiteShimmer();
+    leds.show();
+  }
+  leds.clear();
+
+  tim = millis();
+  while(millis()<tim+15000){
+    TraditionalColors();
+    
+  }
+  leds.clear();
+  
+  tim = millis();
+  while(millis()<tim+15000){
+    BrightTwinkle();
+  }
+  leds.clear();
+  
+But not necessarily in the sequence in which they’re currently called.
+
+I’ve tried doing this, but it doesn’t work. I’m also reasonably sure that part of the reason is that the “helper functions” that are part of each of the routines within Xmas4Leds.h aren’t being called, and I don’t know how to get them to be called. I can (as you can see from routineChange()), call Xmas4Leds and run it for a given period. That does work.
+
+Can you figure out how to manipulate them so that they’re each in their own header file, waiting to be called, as the other functions are?
+
+Next problem is just the opposite, but I suspect that it’s a lot easier to deal with. It’s probably my lack of C programming understanding, that’s preventing me from dealing with it.
+
+There are a couple of working text routines within AaronTextTest.h
+void aaron() and void differentMessage. 
+Pay little attention to the big block of text where everything begins with EFFECT_DO_THIS. That was the original demonstration program, but I wanted a working example to be able to work from.
+As it stands, what happens is the first message is called, and then the second. But the first message is truncated by the timer and then continues on the second loop around the entire program. Then the second message is called, and it too is truncated by the timer, only to be continued on the subsequent loop around.
+Almost certainly, I’ll want to create more text messages, possibly even having them change on a day by day basis. (e.g. if I manage to get a RTC p and running, I may want to include a conditional message along the lines of “Congratulations to whoever on their xxth birthday” , or “There are now only xx days left until Xmas”. So I need some flexibility here. 
+
+So what I want to do in this instance is to have the routineChange() call a text message, but without a timer, and have the text message routine send back the termination and exit code. But also with the facility to repeat a short message several times within the same calling. e.g. “Wishing everyone a merry Xmas” three times, instead of having to “Wishing everyone a merry Xmas         Wishing everyone a merry Xmas        Wishing everyone a merry Xmas” . 
+
+Even if this were straightforward, (and I suspect it is), another problem I came across while trying to deal with this was that the timers within the routineChange() are still active, 
+
+There are probably other minor problems, and there’ll be one massive one, when I try to marry the leds and motor programs so that they don’t impinge on each other. But for now, these are the two biggies.
+
+
+
